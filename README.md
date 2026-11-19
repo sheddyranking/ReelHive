@@ -27,7 +27,11 @@ npm start
 
 Then open **http://localhost:3000**.
 
-`npm run dev` also works. It restarts the server automatically whenever a file changes.
+`npm run dev` also works. It restarts the server automatically whenever a file in `src/` changes (refresh the browser to see the change).
+
+**To stop the app:** press **Ctrl + C** in the terminal where it is running.
+
+**To restart it:** stop it with **Ctrl + C**, then run `npm start` again.
 
 ### Run the tests
 
@@ -42,6 +46,22 @@ docker compose up --build
 ```
 
 Then open http://localhost:3000. Uploaded videos are kept on the `reelhive-data` Docker volume.
+
+**To stop the containers:** press **Ctrl + C**, then run:
+
+```bash
+docker compose down
+```
+
+`docker compose down` keeps the uploaded videos. `docker compose down -v` also deletes the volume and all uploaded videos.
+
+**To restart:** run `docker compose up --build` again (`--build` picks up any code changes).
+
+**Run in the background instead:** `docker compose up --build -d` starts the containers and gives the terminal back. Stop them later with `docker compose down`. Use `docker compose logs -f` to watch the logs.
+
+**Using a different port:** if port 3000 is already in use, change the left-hand number in `docker-compose.yml`, e.g. `"3001:3000"`, then open http://localhost:3001. The right-hand number is the port inside the container and stays 3000.
+
+> Only run one version at a time on the same port. Stop `npm start` before starting Docker on port 3000, or use a different port as above.
 
 ### Settings (environment variables, all optional)
 
