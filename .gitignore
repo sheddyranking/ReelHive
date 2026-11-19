@@ -1,6 +1,7 @@
 node_modules/
-uploads/
-data/
+# local runtime data only (the leading / means "top level of the project")
+/uploads/
+/data/
 coverage/
 .env
 *.log
