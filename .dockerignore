@@ -1,0 +1,9 @@
+node_modules
+uploads
+data
+coverage
+tests
+.git
+.github
+*.md
+.env

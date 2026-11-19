@@ -1,0 +1,30 @@
+# Continuous Integration: on every push or pull request to main, GitHub
+# installs the dependencies, runs the automated tests and builds the Docker
+# image. A failing test stops the pipeline, so broken code is caught early.
+# (Continuous Delivery to Azure is added as a later stage.)
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm test
+
+  docker-build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t reelhive:${{ github.sha }} .

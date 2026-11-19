@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ReelHive · share short videos</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23f5b301' d='M12 2l8.66 5v10L12 22l-8.66-5V7z'/></svg>">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="ReelHive home">
+      <svg viewBox="0 0 24 24" class="brand-mark" aria-hidden="true">
+        <path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/>
+        <path d="M10 8.5v7l6-3.5z" class="play"/>
+      </svg>
+      <span>Reel<strong>Hive</strong></span>
+    </a>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab active" data-sort="new" role="tab" aria-selected="true">For you</button>
+      <button class="tab" data-sort="popular" role="tab" aria-selected="false">Popular</button>
+    </nav>
+
+    <button id="openUpload" class="btn btn-primary">
+      <span aria-hidden="true">＋</span> Upload
+    </button>
+  </header>
+
+  <main>
+    <section id="feed" class="feed" aria-live="polite"></section>
+
+    <div id="empty" class="empty" hidden>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l8.66 5v10L12 22l-8.66-5V7z"/></svg>
+      <h2>The hive is empty</h2>
+      <p>Be the first to share a short video.</p>
+      <button class="btn btn-primary" data-open-upload>Upload a video</button>
+    </div>
+  </main>
+
+  <!-- Upload dialog -->
+  <dialog id="uploadDialog" class="sheet">
+    <form id="uploadForm" method="dialog">
+      <header class="sheet-head">
+        <h2>Upload a video</h2>
+        <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+      </header>
+
+      <label class="drop" id="dropZone">
+        <input type="file" name="video" id="videoInput" accept="video/*" required>
+        <video id="preview" muted playsinline hidden></video>
+        <span id="dropText">Choose a video <small>MP4 or WebM, up to 100 MB</small></span>
+      </label>
+
+      <label>Title
+        <input name="title" maxlength="100" required placeholder="What's happening?">
+      </label>
+      <label>Description
+        <textarea name="description" maxlength="300" rows="2" placeholder="Add a caption or #tags"></textarea>
+      </label>
+      <label>Your name
+        <input name="creator" maxlength="40" placeholder="anonymous">
+      </label>
+
+      <div class="progress" id="progress" hidden><div></div></div>
+      <p class="form-error" id="uploadError" role="alert"></p>
+
+      <footer class="sheet-foot">
+        <button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="uploadBtn">Post</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Comments dialog -->
+  <dialog id="commentsDialog" class="sheet">
+    <header class="sheet-head">
+      <h2 id="commentsTitle">Comments</h2>
+      <button type="button" class="icon-btn" data-close aria-label="Close">✕</button>
+    </header>
+    <ul id="commentList" class="comments"></ul>
+    <form id="commentForm" class="comment-form">
+      <input name="author" maxlength="40" placeholder="Name" class="c-author">
+      <input name="text" maxlength="300" placeholder="Add a comment…" required>
+      <button class="btn btn-primary">Send</button>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
