@@ -6,13 +6,19 @@ Users can upload short videos, scroll through a vertical feed, like videos, comm
 
 ## Features (current version)
 
-- Upload a video (MP4, WebM, MOV) with a title, caption and creator name, plus an upload progress bar
-- Vertical, snap-scrolling feed. Videos autoplay muted when on screen; click to unmute or pause
-- Video streaming with HTTP Range requests, so the browser can seek without downloading the whole file
-- "For you" (newest first) and "Popular" (most liked) feeds
-- Likes, view counts and comments
-- Delete a video, which removes both the record and the file
-- REST API with input validation (file type, file size, required title)
+- **Vertical, snap-scrolling feed.** One video per screen; it autoplays muted when on screen and pauses when you scroll away
+- **Player controls:** play/pause, seek bar, elapsed/total time, playback speed (0.5x to 2x), mute/unmute
+- **Navigation:** scroll, swipe, the up/down buttons, or the keyboard (up/down arrows, `Space` to pause, `M` to mute)
+- **Likes:** like/unlike with the heart button, or double-click the video
+- **Comments panel** that slides in from the side
+- **Save** videos to a personal "Saved" collection (kept in the browser)
+- **Share:** copy a link that opens the app on that exact video (`/?v=<id>`)
+- **Search** by title, caption, creator or `#tag`; hashtags in captions can be clicked
+- **"For you"** (newest) and **"Popular"** (most liked) feeds, with view counts and a "New" badge
+- **Upload** with live preview, caption counter and progress bar (MP4, WebM, MOV)
+- **Delete** a video (removes both the record and the file)
+- **Responsive layout:** sidebar on desktop, full-screen with bottom navigation on phones
+- REST API with input validation (file type, size, required title)
 - Automated tests and a CI workflow on GitHub Actions
 - Dockerfile and docker-compose for container deployment
 
@@ -91,10 +97,11 @@ The storage adapter and the repository are passed into the app (dependency injec
 | Method | Path | Description |
 |---|---|---|
 | GET | `/api/health` | Health check |
-| GET | `/api/videos?sort=new\|popular` | List videos |
+| GET | `/api/videos?sort=new\|popular&q=text` | List videos (optional search by text or #tag) |
 | GET | `/api/videos/:id` | Get one video |
 | POST | `/api/videos` | Upload (multipart: `video`, `title`, `description`, `creator`) |
 | POST | `/api/videos/:id/like` | Like a video |
+| POST | `/api/videos/:id/unlike` | Remove a like |
 | POST | `/api/videos/:id/view` | Count a view |
 | POST | `/api/videos/:id/comments` | Add a comment (`{ author, text }`) |
 | DELETE | `/api/videos/:id` | Delete a video and its file |

@@ -1,9 +1,10 @@
 // REST API for videos (resource-based URLs and HTTP verbs, as in the Week 2 REST lecture).
 //
-//   GET    /api/videos              list videos (?sort=new|popular)
+//   GET    /api/videos              list videos (?sort=new|popular, ?q=search text or #tag)
 //   GET    /api/videos/:id          one video
 //   POST   /api/videos              upload (multipart form: video, title, description, creator)
 //   POST   /api/videos/:id/like     add a like
+//   POST   /api/videos/:id/unlike   remove a like
 //   POST   /api/videos/:id/view     count a view
 //   POST   /api/videos/:id/comments add a comment  { author, text }
 //   DELETE /api/videos/:id          delete video and its file
@@ -47,7 +48,8 @@ function createVideoRouter({ repo, storage, maxUploadMb }) {
 
   router.get('/', async (req, res) => {
     const sort = req.query.sort === 'popular' ? 'popular' : 'new';
-    const videos = await repo.list({ sort });
+    const q = clean(req.query.q, 100);
+    const videos = await repo.list({ sort, q });
     res.json(videos.map((v) => toDto(v, storage)));
   });
 
@@ -80,6 +82,12 @@ function createVideoRouter({ repo, storage, maxUploadMb }) {
 
   router.post('/:id/like', async (req, res) => {
     const video = await repo.update(req.params.id, (v) => { v.likes += 1; });
+    if (!video) return res.status(404).json({ error: 'Video not found' });
+    res.json({ id: video.id, likes: video.likes });
+  });
+
+  router.post('/:id/unlike', async (req, res) => {
+    const video = await repo.update(req.params.id, (v) => { v.likes = Math.max(0, v.likes - 1); });
     if (!video) return res.status(404).json({ error: 'Video not found' });
     res.json({ id: video.id, likes: video.likes });
   });

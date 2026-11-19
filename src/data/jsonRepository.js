@@ -32,8 +32,12 @@ function createJsonRepository(dataFile) {
     return writing;
   }
 
-  async function list({ sort = 'new' } = {}) {
-    const copy = [...videos];
+  async function list({ sort = 'new', q = '' } = {}) {
+    // Simple case-insensitive search over title, description (incl. #tags) and creator
+    const term = q.trim().toLowerCase();
+    const copy = term
+      ? videos.filter((v) => `${v.title} ${v.description} ${v.creator}`.toLowerCase().includes(term))
+      : [...videos];
     if (sort === 'popular') {
       copy.sort((a, b) => b.likes - a.likes || b.views - a.views);
     } else {

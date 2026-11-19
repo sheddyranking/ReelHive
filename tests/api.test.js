@@ -117,6 +117,25 @@ describe('videos API', () => {
     expect(res.body.map((v) => v.id)).toEqual([b.id, a.id]);
   });
 
+  test('unlike reduces likes but never below zero', async () => {
+    const { body } = await uploadVideo();
+    await request(app).post(`/api/videos/${body.id}/like`);
+    let res = await request(app).post(`/api/videos/${body.id}/unlike`).expect(200);
+    expect(res.body.likes).toBe(0);
+    res = await request(app).post(`/api/videos/${body.id}/unlike`).expect(200);
+    expect(res.body.likes).toBe(0);
+  });
+
+  test('search finds videos by title, creator or #tag', async () => {
+    await request(app).post('/api/videos').field('title', 'Cooking pasta').field('description', 'quick dinner #food')
+      .attach('video', fakeVideo, { filename: 'a.mp4', contentType: 'video/mp4' });
+    await uploadVideo('Morning run');
+    expect((await request(app).get('/api/videos?q=%23food')).body).toHaveLength(1);
+    expect((await request(app).get('/api/videos?q=PASTA')).body).toHaveLength(1);
+    expect((await request(app).get('/api/videos?q=tester')).body).toHaveLength(1);
+    expect((await request(app).get('/api/videos?q=nothing-matches')).body).toHaveLength(0);
+  });
+
   test('deletes a video and its file', async () => {
     const { body } = await uploadVideo();
     await request(app).delete(`/api/videos/${body.id}`).expect(204);
